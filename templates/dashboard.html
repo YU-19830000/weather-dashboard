@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>天気ダッシュボード（各務原市）</title>
 
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-o9N1j/7kC7mUZ5D5TYFxrD++mJdbyGUX5C3QC0N7RkM="
-    crossorigin=""
-  />
+  <!-- Leaflet CSS（integrity削除済み） -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <style>
     body {
       font-family: sans-serif;
@@ -30,7 +26,7 @@
       background-color: #fff;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
@@ -46,17 +42,13 @@
     <p id="weather_temp">気温：読み込み中...</p>
   </div>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-oEnf8s0eQmP9XYU+AfUS99m9iRzJ7uvrTsfKQyWvBpM="
-    crossorigin=""
-  ></script>
+  <!-- Leaflet JS（integrity削除済み） -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     const defaultLat = {{ lat }};
     const defaultLon = {{ lon }};
-    const weather = JSON.parse('{{ weather_json | safe }}');
+    const weather = {{ weather | tojson }};
 
     const weatherCity = document.getElementById("weather_city");
     const weatherDesc = document.getElementById("weather_desc");
@@ -69,12 +61,12 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // 初期天気表示
+    // 初期表示の天気を反映
     weatherCity.textContent = "都市：" + weather.city;
     weatherDesc.textContent = "天気：" + weather.description;
     weatherTemp.textContent = "気温：" + weather.temperature + " ℃";
 
-    // 地図クリックで更新
+    // 地図クリックで天気更新
     map.on('click', function(e) {
       const lat = e.latlng.lat;
       const lon = e.latlng.lng;
