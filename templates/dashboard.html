@@ -1,26 +1,80 @@
-<script>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>天気ダッシュボード（各務原市）</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-o9N1j/7kC7mUZ5D5TYFxrD++mJdbyGUX5C3QC0N7RkM="
+    crossorigin=""
+  />
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 1rem;
+    }
+    #map {
+      height: 400px;
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">📍 各務原市 天気ダッシュボード</h1>
+
+  <div id="map"></div>
+
+  <div class="card">
+    <h2>☁️ 天気情報</h2>
+    <p id="weather_city">都市：読み込み中...</p>
+    <p id="weather_desc">天気：読み込み中...</p>
+    <p id="weather_temp">気温：読み込み中...</p>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-oEnf8s0eQmP9XYU+AfUS99m9iRzJ7uvrTsfKQyWvBpM="
+    crossorigin=""
+  ></script>
+
+  <script>
+    const defaultLat = {{ lat }};
+    const defaultLon = {{ lon }};
+    const weather = JSON.parse('{{ weather_json | safe }}');
+
     const weatherCity = document.getElementById("weather_city");
     const weatherDesc = document.getElementById("weather_desc");
     const weatherTemp = document.getElementById("weather_temp");
-  
-    // Flaskから渡された初期値をJSに取り込む
-    const defaultLat = {{ lat }};
-    const defaultLon = {{ lon }};
-  
+
     const map = L.map('map').setView([defaultLat, defaultLon], 10);
     const marker = L.marker([defaultLat, defaultLon]).addTo(map);
-  
-    // 地図タイル表示
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-  
-    // 初期天気をHTMLに反映（Flaskでテンプレートに埋め込む）
-    weatherCity.textContent = "都市：" + "{{ weather['city'] }}";
-    weatherDesc.textContent = "天気：" + "{{ weather['description'] }}";
-    weatherTemp.textContent = "気温：" + "{{ weather['temperature'] }} ℃";
-  
-    // 地図クリックで天気取得
+
+    // 初期天気表示
+    weatherCity.textContent = "都市：" + weather.city;
+    weatherDesc.textContent = "天気：" + weather.description;
+    weatherTemp.textContent = "気温：" + weather.temperature + " ℃";
+
+    // 地図クリックで更新
     map.on('click', function(e) {
       const lat = e.latlng.lat;
       const lon = e.latlng.lng;
@@ -38,4 +92,5 @@
       });
     });
   </script>
-  
+</body>
+</html>
